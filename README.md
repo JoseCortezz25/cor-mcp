@@ -22,19 +22,20 @@ Copy the example env file:
 cp env.example .env
 ```
 
-**Option A — API token (recommended for CI/automation):**
+**Option A — Client credentials (recommended for CI/automation):**
 
-Edit `.env` and add your token:
+Edit `.env` and add your API key and client secret:
 
 ```
-COR_API_TOKEN=your_token_here
+COR_API_KEY=your_api_key_here
+COR_CLIENT_SECRET=your_client_secret_here
 ```
 
-Get your token from COR: **Settings → Integrations → API**.
+Get these from COR: **Settings → Integrations → API**. The server will automatically obtain a Bearer token on startup using the OAuth2 `client_credentials` flow and refresh it when it expires.
 
 **Option B — Interactive login:**
 
-Leave `COR_API_TOKEN` unset. After connecting the MCP server, call `cor_login` with your email and password:
+Leave `COR_API_KEY` / `COR_CLIENT_SECRET` unset. After connecting the MCP server, call `cor_login` with your email and password:
 
 ```
 cor_login(email: "you@company.com", password: "...")

@@ -6,7 +6,7 @@ export function registerAuthTools(server: McpServer): void {
   server.tool(
     "cor_login",
     "Authenticate with COR using email and password. " +
-      "Call this first if COR_API_TOKEN is not configured. " +
+      "Call this if COR_API_KEY + COR_CLIENT_SECRET are not configured. " +
       "Stores the access token in memory for the current session.",
     {
       email: z.string().email().describe("COR account email"),
