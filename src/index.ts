@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { registerAuthTools } from "./tools/auth.js";
 import { registerProjectTools } from "./tools/projects.js";
 import { registerTaskTools } from "./tools/tasks.js";
 import { registerHoursTools } from "./tools/hours.js";
@@ -12,6 +13,7 @@ const server = new McpServer({
   version: "1.0.0",
 });
 
+registerAuthTools(server);
 registerProjectTools(server);
 registerTaskTools(server);
 registerHoursTools(server);

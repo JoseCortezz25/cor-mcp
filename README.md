@@ -14,21 +14,33 @@ Exposes COR's REST API as MCP tools so any compatible AI assistant (Claude Deskt
 npm install
 ```
 
-### 2. Configure your API token
+### 2. Configure authentication
 
-Copy the example env file and add your token:
+Copy the example env file:
 
 ```bash
 cp env.example .env
 ```
 
-Edit `.env`:
+**Option A — API token (recommended for CI/automation):**
+
+Edit `.env` and add your token:
 
 ```
 COR_API_TOKEN=your_token_here
 ```
 
 Get your token from COR: **Settings → Integrations → API**.
+
+**Option B — Interactive login:**
+
+Leave `COR_API_TOKEN` unset. After connecting the MCP server, call `cor_login` with your email and password:
+
+```
+cor_login(email: "you@company.com", password: "...")
+```
+
+The access token is stored in memory for the current session. You'll need to call `cor_login` again each time the server restarts.
 
 ### 3. Build
 
@@ -77,6 +89,11 @@ Add to your MCP config:
 ---
 
 ## Available Tools
+
+### Authentication
+| Tool | Description |
+|------|-------------|
+| `cor_login` | Authenticate with email + password (stores token for the session) |
 
 ### Projects
 | Tool | Description |

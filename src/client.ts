@@ -2,14 +2,50 @@ import "dotenv/config";
 
 const BASE_URL = "https://api.projectcor.com/v1";
 
+let sessionToken: string | null = null;
+
+export function setSessionToken(token: string): void {
+  sessionToken = token;
+}
+
 function getToken(): string {
-  const token = process.env.COR_API_TOKEN;
-  if (!token) {
-    throw new Error(
-      "COR_API_TOKEN is not set. Add it to your .env file (see env.example)."
-    );
+  if (process.env.COR_API_TOKEN) return process.env.COR_API_TOKEN;
+  if (sessionToken) return sessionToken;
+  throw new Error(
+    "Not authenticated. Call cor_login with your email and password first, or set COR_API_TOKEN in your .env file."
+  );
+}
+
+interface OAuthTokenResponse {
+  access_token: string;
+  refresh_token?: string;
+  token_type?: string;
+  expires_in?: number;
+}
+
+export async function corLogin(email: string, password: string): Promise<OAuthTokenResponse> {
+  const response = await fetch(`${BASE_URL}/oauth/token?grant_type=password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+
+  if (!response.ok) {
+    let errorBody: string;
+    try {
+      errorBody = await response.text();
+    } catch {
+      errorBody = "(unable to read response body)";
+    }
+    throw new Error(`COR login failed ${response.status} ${response.statusText}: ${errorBody}`);
   }
-  return token;
+
+  const data = (await response.json()) as OAuthTokenResponse;
+  setSessionToken(data.access_token);
+  return data;
 }
 
 export async function corFetch<T = unknown>(
