@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-const BASE_URL = "https://api.projectcor.com/v1";
+const BASE_URL = process.env.COR_API_URL ?? "https://api.projectcor.com/v1";
 
 interface OAuthTokenResponse {
   access_token: string;
@@ -196,7 +196,62 @@ export async function corFetch<T = unknown>(
     throw new Error(`COR API ${response.status} ${response.statusText}: ${errorBody}`);
   }
 
-  return response.json() as Promise<T>;
+  if (response.status === 204) {
+    return null as T;
+  }
+
+  const text = await response.text();
+  if (!text.trim()) {
+    return null as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return text as T;
+  }
+}
+
+export async function corUpload<T = unknown>(
+  path: string,
+  formData: FormData
+): Promise<T> {
+  const token = await resolveToken();
+  const url = `${BASE_URL}${path}`;
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/json",
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    let errorBody: string;
+    try {
+      errorBody = await response.text();
+    } catch {
+      errorBody = "(unable to read response body)";
+    }
+    throw new Error(`COR API ${response.status} ${response.statusText}: ${errorBody}`);
+  }
+
+  if (response.status === 204) {
+    return null as T;
+  }
+
+  const text = await response.text();
+  if (!text.trim()) {
+    return null as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return text as T;
+  }
 }
 
 export function buildQuery(params: Record<string, unknown>): string {

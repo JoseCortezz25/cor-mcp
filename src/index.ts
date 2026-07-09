@@ -7,6 +7,14 @@ import { registerHoursTools } from "./tools/hours.js";
 import { registerClientTools } from "./tools/clients.js";
 import { registerTeamTools } from "./tools/teams.js";
 import { registerUserTools } from "./tools/users.js";
+import { registerMessageTools } from "./tools/messages.js";
+import { registerLabelTools } from "./tools/labels.js";
+import { registerAttachmentTools } from "./tools/attachments.js";
+import { registerUrlTools } from "./tools/urls.js";
+import { registerContractTools } from "./tools/contracts.js";
+import { registerRatecardTools } from "./tools/ratecards.js";
+import { registerAllocationTools } from "./tools/allocations.js";
+import { registerProductTools } from "./tools/products.js";
 import { getTokenViaClientCredentials, corLogin } from "./client.js";
 
 const server = new McpServer({
@@ -21,6 +29,14 @@ registerHoursTools(server);
 registerClientTools(server);
 registerTeamTools(server);
 registerUserTools(server);
+registerMessageTools(server);
+registerLabelTools(server);
+registerAttachmentTools(server);
+registerUrlTools(server);
+registerContractTools(server);
+registerRatecardTools(server);
+registerAllocationTools(server);
+registerProductTools(server);
 
 // Auto-authenticate if env vars are present (priority: client_credentials > email/password)
 const apiKey = process.env.COR_API_KEY;
